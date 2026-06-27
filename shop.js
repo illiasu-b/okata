@@ -9,7 +9,7 @@ import { checkWishlistState } from "./wishlist.js";
 
 const container = document.getElementById("products-container");
 
-const STORE_WHATSAPP = "233240391997";
+const STORE_WHATSAPP = "233553943686";
 
 // ==========================
 // ALL PRODUCTS CACHE
@@ -45,7 +45,7 @@ window.buyViaWhatsApp = function(name, price, currency, sellerWhatsapp) {
     currency === "EUR" ? "€" :
     currency === "GBP" ? "£" : "₵";
   const message = encodeURIComponent(
-    `Hello RahmanGrow! 👋\n\nI'd like to order:\n• ${name} — ${currency} ${Number(price).toFixed(2)}\n\nPlease confirm my order. Thank you!`
+    `Hello Felicia! 👋\n\nI'd like to order:\n• ${name} — ${currency} ${Number(price).toFixed(2)}\n\nPlease confirm my order. Thank you!`
   );
   window.open(`https://wa.me/${number}?text=${message}`, "_blank");
 };

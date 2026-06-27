@@ -211,11 +211,11 @@
 
 <!-- ================= WHATSAPP CART FUNCTION ================= -->
 <script>
-  const STORE_WHATSAPP = "233240391997";
+  const STORE_WHATSAPP = "233553943686";
 
   function sendCartToWhatsApp() {
     // Read cart from localStorage — adjust the key name if yours is different
-    const raw  = localStorage.getItem("cart") || localStorage.getItem("rahmangrow_cart") || "[]";
+    const raw  = localStorage.getItem("cart") || localStorage.getItem("okata_cart") || "[]";
     const cart = JSON.parse(raw);
 
     if (!cart.length) {
@@ -239,7 +239,7 @@
     const currency = cart[0]?.currency || "GHS";
 
     const message = encodeURIComponent(
-      `Hello RahmanGrow! 👋\n\nI'd like to place an order:\n\n${lines}\n\n` +
+      `Hello Felicia! 👋\n\nI'd like to place an order:\n\n${lines}\n\n` +
       `*Total: ${currency} ${total}*\n\nPlease confirm my order. Thank you!`
     );
 
