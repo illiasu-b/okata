@@ -1,0 +1,206 @@
+/* Section Title */
+h3 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #2e7d32; /* farm green */
+  font-weight: 600;
+}
+
+/* Form Container */
+#orderForm {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Inputs */
+#orderForm input {
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: 0.3s ease;
+  outline: none;
+}
+
+/* Input Focus Effect */
+#orderForm input:focus {
+  border-color: #2e7d32;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+/* Buttons */
+#orderForm button {
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+/* Pay Now Button */
+#payNowBtn {
+  background: #0d6efd;
+  color: white;
+}
+
+#payNowBtn:hover {
+  background: #0b5ed7;
+  transform: translateY(-2px);
+}
+
+/* Place Order Button */
+#orderForm button[type="submit"] {
+  background: #2e7d32;
+  color: white;
+}
+
+#orderForm button[type="submit"]:hover {
+  background: #256628;
+  transform: translateY(-2px);
+}
+
+/* Mobile Friendly */
+@media (max-width: 600px) {
+  #orderForm {
+    padding: 20px;
+  }
+}
+h3 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-bottom: 25px;
+  text-shadow: 0 2px 10px rgba(46, 125, 50, 0.2);
+}
+
+/* Cart Container Text Styling */
+#cartContainer {
+  max-width: 600px;
+  margin: 20px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333; /* main text color */
+  line-height: 1.5;
+}
+
+/* Table Text Styling */
+#cartContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+  text-align: left;
+  font-size: 16px;
+}
+
+/* Table Header Styling */
+#cartContainer th {
+  font-weight: 700;
+  color: #2e7d32; /* farm green accent */
+  padding-bottom: 8px;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+/* Table Body Text */
+#cartContainer td {
+  font-weight: 500;
+  color: #444;
+  padding: 6px 0;
+}
+
+/* Total Text Styling */
+#cartContainer p {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2e7d32;
+  text-align: right;
+  margin-top: 10px;
+}
+
+/* Optional: Subtle striping for rows */
+#cartContainer tbody tr:nth-child(odd) td {
+  color: #555;
+}
+
+/* Optional: Hover highlight for readability */
+#cartContainer tbody tr:hover td {
+  color: #2e7d32;
+  transition: color 0.3s ease;
+}
+/* Cart Container Text Only */
+#cartContainer {
+  max-width: 600px;
+  margin: 20px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2e7d32; /* Farm green accent for headers */
+  line-height: 1.6;
+}
+
+/* Remove table borders and spacing */
+#cartContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+
+/* Table Headers as text only */
+#cartContainer th {
+  font-weight: 700;
+  font-size: 18px;
+  text-align: left;
+  padding: 8px 0;
+  color: #2e7d32;
+  border: none;
+}
+
+/* Table Body Text Only */
+#cartContainer td {
+  font-weight: 500;
+  font-size: 16px;
+  padding: 4px 0;
+  color: #333;
+  border: none;
+}
+
+/* Remove any borders from table rows */
+#cartContainer tr {
+  border: none;
+}
+
+/* Total Text */
+#cartContainer p {
+  font-weight: 700;
+  font-size: 18px;
+  color: #2e7d32;
+  text-align: right;
+  margin-top: 10px;
+}
+ .cart-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+}
+
+.new-price {
+  color: #1a7f37;
+  font-weight: bold;
+  font-size: 16px;
+}
+

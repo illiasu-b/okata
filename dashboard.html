@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00BFFF">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00BFFF">
+  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="search.css?v=2">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    .section-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 55%;
+      padding: 14px 20px;
+      margin: 10px 0 0;
+      background: linear-gradient(135deg, blue, #4caf50);
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      text-align: left;
+    }
+
+    .section-toggle:nth-of-type(1) { background: linear-gradient(135deg, #2e7d32, #4caf50); }
+    .section-toggle:nth-of-type(2) { background: linear-gradient(135deg, #1565c0, #42a5f5); }
+    .section-toggle:nth-of-type(3) { background: linear-gradient(135deg, #6a1b9a, #ab47bc); }
+    .section-toggle:nth-of-type(4) { background: linear-gradient(135deg, #ef6c00, #ffa726); }
+
+    .section-toggle .arrow { transition: transform 0.3s ease; font-style: normal; font-size: 0.85rem; }
+    .section-toggle.open .arrow { transform: rotate(180deg); }
+    .section-toggle.open { border-radius: 10px 10px 0 0; }
+
+    .collapsible-section {
+      display: none;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      padding: 20px;
+      background: #fff;
+      margin-bottom: 6px;
+    }
+
+    .collapsible-section.open { display: block; }
+
+    #dashboardWrap {
+      padding: 0 16px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ── REVENUE CSS ── */
+    .rev-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+    .rev-tab {
+      padding: 7px 16px; border-radius: 20px; border: 1px solid #ddd;
+      background: transparent; color: #6b7280; font-size: 0.8rem; font-weight: 600;
+      font-family: Arial, sans-serif; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .rev-tab:hover  { border-color: #2e7d32; color: #2e7d32; }
+    .rev-tab.active { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+
+    .rev-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .rev-stat-card {
+      background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
+      padding: 18px; display: flex; align-items: flex-start; gap: 14px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .rev-stat-card:hover { transform: translateY(-2px); border-color: #2e7d32; }
+    .rev-stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .rev-stat-label { font-size: 0.72rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+    .rev-stat-value { font-size: 1.3rem; font-weight: 700; color: #111; line-height: 1.2; }
+    .rev-stat-sub { font-size: 0.7rem; color: #6b7280; margin-top: 3px; }
+    .rev-bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* ── PERFORMANCE CSS ── */
+    .perf-stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .perf-stat {
+      background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px;
+      padding: 14px; display: flex; flex-direction: column; align-items: center;
+      gap: 6px; text-align: center; transition: transform 0.2s, border-color 0.2s;
+    }
+    .perf-stat:hover { transform: translateY(-2px); border-color: #2e7d32; }
+    .perf-stat i { font-size: 1.2rem; }
+    .perf-stat-val { font-size: 1.1rem; font-weight: 700; color: #111; line-height: 1.2; }
+    .perf-stat-lbl { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+    .perf-tip { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; border-radius: 8px; font-size: 0.84rem; line-height: 1.4; }
+    .perf-tip i { margin-top: 2px; flex-shrink: 0; }
+    .perf-tip-success { background: rgba(34,197,94,0.08);  color: #22c55e; border: 1px solid rgba(34,197,94,0.2);  }
+    .perf-tip-warn    { background: rgba(245,158,11,0.08); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+    .perf-tip-danger  { background: rgba(239,68,68,0.08);  color: #ef4444; border: 1px solid rgba(239,68,68,0.2);  }
+    .perf-tip-info    { background: rgba(79,142,247,0.08); color: #4f8ef7; border: 1px solid rgba(79,142,247,0.2); }
+    .perf-admin-summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .perf-admin-sum-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; }
+    .perf-sort-btn {
+      padding: 6px 14px; border-radius: 20px; border: 1px solid #ddd;
+      background: transparent; color: #6b7280; font-size: 0.78rem; font-weight: 600;
+      font-family: Arial, sans-serif; cursor: pointer; transition: all 0.2s; text-transform: capitalize;
+    }
+    .perf-sort-btn:hover  { border-color: #2e7d32; color: #2e7d32; }
+    .perf-sort-btn.active { background: #2e7d32; color: #fff; border-color: #2e7d32; }
+
+    /* ── BULK CSS ── */
+    .bulk-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .bulk-search {
+      flex: 1; min-width: 180px; padding: 9px 14px; border-radius: 8px;
+      border: 1px solid #ddd; background: #fff; color: #111;
+      font-size: 0.88rem; font-family: Arial, sans-serif;
+    }
+    .bulk-search:focus { outline: none; border-color: #2e7d32; }
+    .bulk-select {
+      padding: 9px 14px; border-radius: 8px; border: 1px solid #ddd;
+      background: #fff; color: #111; font-size: 0.88rem;
+      font-family: Arial, sans-serif; cursor: pointer;
+    }
+    .bulk-count-bar {
+      display: flex; align-items: center; gap: 12px; padding: 10px 16px;
+      background: rgba(46,125,50,0.08); border: 1px solid rgba(46,125,50,0.2);
+      border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem; color: #2e7d32;
+    }
+    .bulk-count-bar strong { font-weight: 700; }
+    #bulkActions { display: none; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+    .bulk-action-btn {
+      padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer;
+      font-size: 0.82rem; font-weight: 600; font-family: Arial, sans-serif;
+      display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;
+    }
+    .bulk-action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .bulk-btn-edit   { background: #2e7d32; color: #fff; }
+    .bulk-btn-edit:hover:not(:disabled) { background: #1b5e20; }
+    .bulk-btn-export { background: rgba(79,142,247,0.12); color: #4f8ef7; border: 1px solid rgba(79,142,247,0.2); }
+    .bulk-btn-export:hover:not(:disabled) { background: rgba(79,142,247,0.22); }
+    .bulk-btn-delete { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+    .bulk-btn-delete:hover:not(:disabled) { background: rgba(239,68,68,0.22); }
+    .bulk-btn-refresh { background: #f3f4f6; color: #6b7280; border: 1px solid #ddd; }
+    .bulk-btn-refresh:hover { background: #e5e7eb; color: #111; }
+    .bulk-row-selected { background: rgba(46,125,50,0.05) !important; }
+    .bulk-row-selected:hover { background: rgba(46,125,50,0.08) !important; }
+
+    /* Bulk Edit Modal */
+    #bulkEditModal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 300;
+      align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    }
+    #bulkEditModal.open { display: flex; }
+    .bulk-modal {
+      background: #fff; border: 1px solid #ddd; border-radius: 16px;
+      padding: 28px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+    }
+    .bulk-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .bulk-modal-title { font-weight: 700; font-size: 1rem; color: #111; }
+    .bulk-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .bulk-field-row label { font-size: 0.75rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+    .bulk-field-row input, .bulk-field-row select { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #ddd; background: #f9fafb; color: #111; font-size: 0.88rem; font-family: Arial, sans-serif; }
+    .bulk-field-full { margin-bottom: 14px; }
+    .bulk-field-full label { font-size: 0.75rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; display: block; }
+    .bulk-field-full input, .bulk-field-full select { width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #ddd; background: #f9fafb; color: #111; font-size: 0.88rem; font-family: Arial, sans-serif; }
+    .bulk-hint { font-size: 0.72rem; color: #6b7280; margin-top: 4px; }
+    #bulkMsg { display: none; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-top: 12px; }
+
+    @media (max-width: 900px) {
+      .rev-stats          { grid-template-columns: 1fr 1fr; }
+      .rev-bottom-grid    { grid-template-columns: 1fr; }
+      .perf-stat-grid     { grid-template-columns: repeat(2, 1fr); }
+      .perf-admin-summary { grid-template-columns: repeat(2, 1fr); }
+      .bulk-toolbar       { flex-direction: column; align-items: stretch; }
+      #bulkActions        { margin-left: 0; width: 100%; }
+    }
+    @media (max-width: 560px) {
+      .rev-stats          { grid-template-columns: 1fr; }
+      .perf-stat-grid     { grid-template-columns: repeat(2, 1fr); }
+      .perf-admin-summary { grid-template-columns: 1fr 1fr; }
+      .bulk-field-row     { grid-template-columns: 1fr; }
+    }
+   
+/* ── BULK TOOLBAR ── */
+.bulk-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.bulk-search {
+  flex: 1;
+  min-width: 180px;
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #2a2f3f);
+  background: var(--surface, #161920);
+  color: var(--text, #eef0f6);
+  font-size: 0.88rem;
+  font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.bulk-search:focus { outline: none; border-color: var(--accent, #f0b429); }
+
+.bulk-select {
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #2a2f3f);
+  background: var(--surface, #161920);
+  color: var(--text, #eef0f6);
+  font-size: 0.88rem;
+  font-family: 'DM Sans', Arial, sans-serif;
+  cursor: pointer;
+}
+
+/* ── SELECTION COUNT BAR ── */
+.bulk-count-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(240,180,41,0.08);
+  border: 1px solid rgba(240,180,41,0.2);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: var(--accent, #f0b429);
+}
+
+.bulk-count-bar strong { font-family: 'Syne', sans-serif; }
+
+/* ── BULK ACTION BUTTONS ── */
+#bulkActions {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.bulk-action-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: 'DM Sans', Arial, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.bulk-action-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.bulk-btn-edit   { background: var(--accent, #f0b429); color: #000; }
+.bulk-btn-edit:hover:not(:disabled) { background: #e0a520; }
+
+.bulk-btn-export { background: rgba(79,142,247,0.12); color: #4f8ef7; border: 1px solid rgba(79,142,247,0.2); }
+.bulk-btn-export:hover:not(:disabled) { background: rgba(79,142,247,0.22); }
+
+.bulk-btn-delete { background: rgba(239,68,68,0.12); color: var(--danger, #ef4444); border: 1px solid rgba(239,68,68,0.2); }
+.bulk-btn-delete:hover:not(:disabled) { background: rgba(239,68,68,0.22); }
+
+.bulk-btn-refresh { background: rgba(255,255,255,0.06); color: var(--muted, #6b7280); border: 1px solid var(--border, #2a2f3f); }
+.bulk-btn-refresh:hover { background: rgba(255,255,255,0.1); color: var(--text, #eef0f6); }
+
+/* ── SELECTED ROW ── */
+.bulk-row-selected { background: rgba(240,180,41,0.05) !important; }
+.bulk-row-selected:hover { background: rgba(240,180,41,0.08) !important; }
+
+/* ── BULK EDIT MODAL ── */
+#bulkEditModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+#bulkEditModal.open { display: flex; }
+
+.bulk-modal {
+  background: var(--card, #1c2030);
+  border: 1px solid var(--border, #2a2f3f);
+  border-radius: 16px;
+  padding: 28px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: fadeIn 0.25s ease;
+}
+
+.bulk-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.bulk-modal-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text, #eef0f6);
+}
+
+.bulk-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.bulk-field-row label {
+  font-size: 0.75rem;
+  color: var(--muted, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.bulk-field-row input,
+.bulk-field-row select {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #2a2f3f);
+  background: var(--surface, #161920);
+  color: var(--text, #eef0f6);
+  font-size: 0.88rem;
+  font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.bulk-field-full {
+  margin-bottom: 14px;
+}
+
+.bulk-field-full label {
+  font-size: 0.75rem;
+  color: var(--muted, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.bulk-field-full input,
+.bulk-field-full select {
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border, #2a2f3f);
+  background: var(--surface, #161920);
+  color: var(--text, #eef0f6);
+  font-size: 0.88rem;
+  font-family: 'DM Sans', Arial, sans-serif;
+}
+
+.bulk-hint {
+  font-size: 0.72rem;
+  color: var(--muted, #6b7280);
+  margin-top: 4px;
+}
+
+/* ── MSG ── */
+#bulkMsg {
+  display: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+/* ── ADMIN LIGHT THEME OVERRIDES ── */
+.admin-bulk .bulk-search,
+.admin-bulk .bulk-select {
+  background: #fff;
+  border-color: #ddd;
+  color: #111;
+}
+
+.admin-bulk .bulk-modal { background: #fff; border-color: #ddd; }
+.admin-bulk .bulk-modal-title { color: #111; }
+.admin-bulk .bulk-field-row input,
+.admin-bulk .bulk-field-row select,
+.admin-bulk .bulk-field-full input,
+.admin-bulk .bulk-field-full select { background: #f9fafb; border-color: #ddd; color: #111; }
+.admin-bulk .bulk-field-row label,
+.admin-bulk .bulk-field-full label { color: #6b7280; }
+.admin-bulk .bulk-count-bar { background: rgba(46,125,50,0.08); border-color: rgba(46,125,50,0.2); color: #2e7d32; }
+.admin-bulk .bulk-btn-edit { background: #2e7d32; color: #fff; }
+.admin-bulk .bulk-btn-edit:hover { background: #1b5e20; }
+.admin-bulk .bulk-row-selected { background: rgba(46,125,50,0.05) !important; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .bulk-toolbar { flex-direction: column; align-items: stretch; }
+  #bulkActions { margin-left: 0; width: 100%; }
+  .bulk-field-row { grid-template-columns: 1fr; }
+}
+.admin-bulk #bulkTableWrap {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow-x: auto;  /* ← change overflow:hidden to overflow-x:auto */
+}
+
+.admin-bulk #bulkTableWrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.87rem;
+  color: #111;
+}
+
+.admin-bulk #bulkTableWrap thead th {
+  background: #f3f4f6;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #6b7280;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.admin-bulk #bulkTableWrap tbody td {
+  padding: 11px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+  color: #111;
+}
+
+.admin-bulk #bulkTableWrap tbody tr:hover { background: #f9fafb; }
+.admin-bulk #bulkTableWrap tbody tr:last-child td { border-bottom: none; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── BULK EDIT MODAL ── -->
+  <div id="bulkEditModal">
+    <div class="bulk-modal">
+      <div class="bulk-modal-header">
+        <span class="bulk-modal-title">
+          <i class="fas fa-pen" style="color:#2e7d32;margin-right:8px;"></i>
+          Bulk Edit <span id="beCount"></span> Products
+        </span>
+        <button onclick="closeBulkEditModal()"
+          style="width:30px;height:30px;border-radius:50%;border:1px solid #ddd;background:transparent;color:#6b7280;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <p style="font-size:0.82rem;color:#6b7280;margin-bottom:20px;">
+        Only filled fields will be updated. Leave blank to keep existing values.
+      </p>
+      <div class="bulk-field-row">
+        <div>
+          <label>Price Action</label>
+          <select id="bePriceAction">
+            <option value="set">Set to exact value</option>
+            <option value="increase">Increase by amount</option>
+            <option value="decrease">Decrease by amount</option>
+            <option value="percent">Increase by %</option>
+          </select>
+        </div>
+        <div>
+          <label>Price Value</label>
+          <input type="number" id="bePrice" placeholder="Leave blank to skip" min="0" step="0.01">
+        </div>
+      </div>
+      <p class="bulk-hint" style="margin-bottom:14px;">e.g. "Increase by amount" + 5 → adds GHS 5 to each price</p>
+      <div class="bulk-field-row">
+        <div>
+          <label>Stock Action</label>
+          <select id="beStockAction">
+            <option value="set">Set to exact value</option>
+            <option value="add">Add to stock</option>
+            <option value="subtract">Subtract from stock</option>
+          </select>
+        </div>
+        <div>
+          <label>Stock Value</label>
+          <input type="number" id="beStock" placeholder="Leave blank to skip" min="0">
+        </div>
+      </div>
+      <div class="bulk-field-full">
+        <label>Category (replaces existing)</label>
+        <input type="text" id="beCategory" placeholder="Leave blank to skip — e.g. electronics">
+      </div>
+      <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">
+        <button onclick="closeBulkEditModal()"
+          style="padding:9px 18px;border-radius:8px;border:1px solid #ddd;background:transparent;color:#6b7280;cursor:pointer;font-size:0.88rem;">
+          Cancel
+        </button>
+        <button id="beApplyBtn" onclick="applyBulkEdit()"
+          style="padding:9px 18px;border-radius:8px;border:none;background:#2e7d32;color:#fff;cursor:pointer;font-size:0.88rem;font-weight:600;display:inline-flex;align-items:center;gap:6px;">
+          <i class="fas fa-check"></i> Apply Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOP LOGO BAR -->
+  <header class="top-navbar">
+    <div class="top-logo">
+      <img src="logo.png?v=2" alt="Okata Logo">
+    </div>
+  </header>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">
+      <a href="index.html"></a>
+    </div>
+    <ul class="nav-links" id="nav-links">
+      <li>
+        <a href="index.html">
+          <i class="fas fa-house"></i>
+          <span>Home</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div id="dashboardWrap">
+
+    <h2>Seller Dashboard</h2>
+    <button id="logoutBtn">Logout</button>
+    <button id="exportSubs">Export Emails</button>
+
+    <!-- ── PENDING SELLER APPROVALS ── -->
+    <button class="section-toggle" data-target="pendingSellersSection">
+      <span><i class="fas fa-user-clock" style="margin-right:8px;"></i>Pending Seller Approvals</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="pendingSellersSection">
+      <div id="pendingSellersList" style="margin:10px 0;"></div>
+    </div>
+
+    <!-- ── CATEGORY MANAGER ── -->
+    <button class="section-toggle" data-target="categorySection">
+      <span><i class="fas fa-tags" style="margin-right:8px;"></i>Manage Categories</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="categorySection">
+      <div style="display:flex; gap:10px; margin-bottom:10px; flex-wrap:wrap; align-items:center;">
+        <input id="catName" type="text" placeholder="Category name (e.g. Electronics)"
+          style="padding:8px; border:1px solid #ccc; border-radius:6px; min-width:180px;" />
+        <button type="button" id="addCatBtn"
+          style="padding:8px 16px; background:#2563eb; color:#fff; border:none; border-radius:6px; cursor:pointer;">
+          + Add Category
+        </button>
+      </div>
+      <div id="categoryList" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    </div>
+
+    <!-- ── ADD PRODUCT ── -->
+    <button class="section-toggle" data-target="productSection">
+      <span><i class="fas fa-plus-circle" style="margin-right:8px;"></i>Add Product</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="productSection">
+      <form id="productForm">
+        <input type="text" id="name" placeholder="Product Name" required>
+        <input type="number" id="price" min="0" step="0.01" placeholder="e.g. 3.50" required>
+        <select id="currency" required>
+          <option value="GHS">₵ GHS</option>
+          <option value="USD">$ USD</option>
+          <option value="EUR">€ EUR</option>
+          <option value="GBP">£ GBP</option>
+        </select>
+        <input type="number" id="stock" placeholder="Stock quantity" required>
+        <input type="file" id="imageFile" accept="image/*">
+        <input type="number" id="discount" min="0" max="100" placeholder="Discount % (e.g. 20)" />
+        <input type="text" id="cartLink" placeholder="Add to Cart link (e.g. shop.html)" />
+        <div class="form-group">
+          <label for="category">Category</label>
+          <select id="category" name="category" required>
+            <option value="" disabled selected>Select category</option>
+          </select>
+        </div>
+        <img id="preview" width="80" style="display:block; margin:10px 0;">
+        <button type="submit">Add Product</button>
+      </form>
+    </div>
+
+    <!-- ── PROMO MANAGER ── -->
+    <button class="section-toggle" data-target="promoSection">
+      <span><i class="fas fa-percentage" style="margin-right:8px;"></i>Manage Promo</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="promoSection">
+      <div style="overflow-x:auto; margin-top:10px;">
+        <table border="1" style="width:100%; border-collapse:collapse; font-size:14px;">
+          <thead>
+            <tr style="background:#f3f4f6;">
+              <th style="padding:8px;">Image</th>
+              <th style="padding:8px;">Name</th>
+              <th style="padding:8px;">Price</th>
+              <th style="padding:8px;">Discount</th>
+              <th style="padding:8px;">Stock</th>
+              <th style="padding:8px;">Active</th>
+              <th style="padding:8px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="promoTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── STOCK & ANALYTICS ── -->
+    <button class="section-toggle" data-target="analyticsSection">
+      <span><i class="fas fa-chart-bar" style="margin-right:8px;"></i>Stock &amp; Analytics</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="analyticsSection">
+      <div id="lowStockAlerts"></div>
+      <div id="stockManager" style="margin-top:10px;"></div>
+      <div id="analytics" style="margin-top:10px;"></div>
+      <div id="analyticsSummary" style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:1.5rem;"></div>
+      <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px; margin-bottom:1rem;">
+        <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
+          <i class="fas fa-chart-line" style="color:#2e7d32; margin-right:6px;"></i>Revenue Over Time (Last 7 Days)
+        </h4>
+        <canvas id="revenueChart" height="100"></canvas>
+      </div>
+      <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px; margin-bottom:1rem;">
+        <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
+          <i class="fas fa-trophy" style="color:#f59e0b; margin-right:6px;"></i>Top 5 Products by Revenue
+        </h4>
+        <canvas id="topProductsChart" height="120"></canvas>
+      </div>
+      <div style="background:#fff; border:1px solid #eee; border-radius:10px; padding:16px;">
+        <h4 style="margin:0 0 12px; font-size:0.95rem; color:#444;">
+          <i class="fas fa-chart-pie" style="color:#1d4ed8; margin-right:6px;"></i>Orders by Status
+        </h4>
+        <div style="max-width:300px; margin:0 auto;">
+          <canvas id="orderStatusChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ORDERS ── -->
+    <button class="section-toggle" data-target="ordersSection">
+      <span><i class="fas fa-receipt" style="margin-right:8px;"></i>Orders</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="ordersSection">
+      <button id="deleteSelectedBtn">🗑 Delete Selected Orders</button>
+      <div style="overflow-x:auto; margin-top:10px;">
+        <table border="1" width="100%">
+          <thead>
+            <tr>
+              <th><input type="checkbox" id="selectAll"></th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Items</th>
+              <th>Total (₵)</th>
+              <th>Payment Status</th>
+              <th>Delivery Status</th>
+              <th>Date/Time</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── REVENUE DASHBOARD ── -->
+    <button class="section-toggle" data-target="revenueSection">
+      <span><i class="fas fa-chart-line" style="margin-right:8px;"></i>Revenue Dashboard</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="revenueSection">
+      <div class="rev-tabs">
+        <button class="rev-tab" data-filter="today" onclick="setRevenueFilter('today')"><i class="fas fa-sun"></i> Today</button>
+        <button class="rev-tab" data-filter="week"  onclick="setRevenueFilter('week')"><i class="fas fa-calendar-week"></i> Week</button>
+        <button class="rev-tab active" data-filter="month" onclick="setRevenueFilter('month')"><i class="fas fa-calendar"></i> Month</button>
+        <button class="rev-tab" data-filter="year"  onclick="setRevenueFilter('year')"><i class="fas fa-chart-line"></i> Year</button>
+        <button class="rev-tab" data-filter="all"   onclick="setRevenueFilter('all')"><i class="fas fa-infinity"></i> All Time</button>
+      </div>
+      <div class="rev-stats">
+        <div class="rev-stat-card">
+          <div class="rev-stat-icon" style="background:rgba(46,125,50,0.12);color:#2e7d32;"><i class="fas fa-coins"></i></div>
+          <div><div class="rev-stat-label">Total Revenue</div><div class="rev-stat-value" id="revTotalSales">—</div><div class="rev-stat-sub">From delivered orders</div></div>
+        </div>
+        <div class="rev-stat-card">
+          <div class="rev-stat-icon" style="background:rgba(79,142,247,0.12);color:#4f8ef7;"><i class="fas fa-shopping-bag"></i></div>
+          <div><div class="rev-stat-label">Total Orders</div><div class="rev-stat-value" id="revOrderCount">—</div><div class="rev-stat-sub">All statuses</div></div>
+        </div>
+        <div class="rev-stat-card">
+          <div class="rev-stat-icon" style="background:rgba(34,197,94,0.12);color:#22c55e;"><i class="fas fa-chart-bar"></i></div>
+          <div><div class="rev-stat-label">Avg Order Value</div><div class="rev-stat-value" id="revAvgOrder">—</div><div class="rev-stat-sub">Per delivered order</div></div>
+        </div>
+        <div class="rev-stat-card">
+          <div class="rev-stat-icon" style="background:rgba(239,68,68,0.12);color:#ef4444;"><i class="fas fa-clock"></i></div>
+          <div><div class="rev-stat-label">Pending Revenue</div><div class="rev-stat-value" id="revPending">—</div><div class="rev-stat-sub">Awaiting delivery</div></div>
+        </div>
+      </div>
+      <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;margin-bottom:16px;">
+        <h4 style="margin:0 0 12px;font-size:0.95rem;color:#444;">
+          <i class="fas fa-chart-area" style="color:#2e7d32;margin-right:6px;"></i>Sales Over Time
+        </h4>
+        <div id="revChartWrap" style="min-height:140px;display:flex;flex-direction:column;justify-content:flex-end;">
+          <p style="text-align:center;color:#888;font-size:0.85rem;">Loading chart…</p>
+        </div>
+      </div>
+      <div class="rev-bottom-grid">
+        <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;">
+          <h4 style="margin:0 0 12px;font-size:0.95rem;color:#444;"><i class="fas fa-fire" style="color:#f59e0b;margin-right:6px;"></i>Top Products</h4>
+          <table style="width:100%;border-collapse:collapse;font-size:0.87rem;">
+            <thead><tr style="background:#f3f4f6;"><th style="padding:8px;text-align:left;">Product</th><th style="padding:8px;text-align:center;">Qty Sold</th><th style="padding:8px;text-align:right;">Revenue</th></tr></thead>
+            <tbody id="revTopProductsBody"><tr><td colspan="3" style="text-align:center;padding:16px;color:#888;">No data yet</td></tr></tbody>
+          </table>
+        </div>
+        <div style="background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;">
+          <h4 style="margin:0 0 12px;font-size:0.95rem;color:#444;"><i class="fas fa-trophy" style="color:#f59e0b;margin-right:6px;"></i>Top Sellers</h4>
+          <table style="width:100%;border-collapse:collapse;font-size:0.87rem;">
+            <thead><tr style="background:#f3f4f6;"><th style="padding:8px;text-align:left;">Seller</th><th style="padding:8px;text-align:center;">Orders</th><th style="padding:8px;text-align:right;">Revenue</th></tr></thead>
+            <tbody id="revTopSellersBody"><tr><td colspan="3" style="text-align:center;padding:16px;color:#888;">No data yet</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /revenueSection -->
+
+    <!-- ── SELLER PAYOUTS ── -->
+    <button class="section-toggle" data-target="payoutsSection">
+      <span><i class="fas fa-money-bill-transfer" style="margin-right:8px;"></i>Seller Payouts</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="payoutsSection">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <p style="font-size:0.82rem;color:#888;margin:0;">
+          Balances owed from delivered orders not yet paid out.
+        </p>
+        <button onclick="refreshPayoutBalances()"
+          style="padding:7px 14px;background:#f3f4f6;color:#6b7280;border:1px solid #ddd;border-radius:8px;font-size:0.8rem;cursor:pointer;">
+          <i class="fas fa-rotate-right"></i> Refresh
+        </button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.87rem;">
+          <thead>
+            <tr style="background:#f3f4f6;">
+              <th style="padding:8px;text-align:left;">Seller</th>
+              <th style="padding:8px;text-align:center;">Delivered Orders</th>
+              <th style="padding:8px;text-align:right;">Owed</th>
+              <th style="padding:8px;text-align:center;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="payoutBalancesBody">
+            <tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">Loading balances…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 style="margin:24px 0 12px;font-size:0.95rem;color:#444;">
+        <i class="fas fa-clock-rotate-left" style="color:#6b7280;margin-right:6px;"></i>Payout History
+      </h4>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.87rem;">
+          <thead>
+            <tr style="background:#f3f4f6;">
+              <th style="padding:8px;text-align:left;">Seller</th>
+              <th style="padding:8px;text-align:right;">Amount</th>
+              <th style="padding:8px;text-align:center;">Status</th>
+              <th style="padding:8px;text-align:left;">Date</th>
+            </tr>
+          </thead>
+          <tbody id="payoutHistoryBody">
+            <tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">Loading history…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="payoutMsg" style="display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.85rem;"></div>
+    </div>
+
+    <!-- ── SELLER PERFORMANCE ── -->
+    <button class="section-toggle" data-target="perfSection">
+      <span><i class="fas fa-trophy" style="margin-right:8px;"></i>Seller Performance</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section" id="perfSection">
+      <div id="perfAdminWrap">
+        <p style="text-align:center;color:#888;padding:32px;">Loading seller performance data…</p>
+      </div>
+    </div>
+
+    <!-- ── BULK PRODUCT MANAGEMENT ── -->
+    <button class="section-toggle" data-target="bulkSection">
+      <span><i class="fas fa-layer-group" style="margin-right:8px;"></i>Bulk Product Management</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="collapsible-section admin-bulk" id="bulkSection"></div>
+
+      <!-- Toolbar -->
+      <div class="bulk-toolbar">
+        <input class="bulk-search" type="text" placeholder="Search by name, category, seller…"
+          oninput="bulkSearch(this.value)">
+        <select class="bulk-select" id="bulkCatFilter" onchange="bulkFilterCat(this.value)">
+          <option value="">All Categories</option>
+        </select>
+        <button class="bulk-action-btn bulk-btn-refresh" onclick="bulkRefresh()">
+          <i class="fas fa-rotate-right"></i> Refresh
+        </button>
+        <div id="bulkActions">
+          <button class="bulk-action-btn bulk-btn-edit"
+            onclick="openBulkEditModal(); document.getElementById('beCount').textContent = '(' + document.getElementById('bulkSelectedCount').textContent + ')'">
+            <i class="fas fa-pen"></i> Edit Selected
+          </button>
+          <button class="bulk-action-btn bulk-btn-export" onclick="bulkExport()">
+            <i class="fas fa-file-csv"></i> Export CSV
+          </button>
+          <button class="bulk-action-btn bulk-btn-delete" id="bulkDeleteBtn" onclick="bulkDelete()">
+            <i class="fas fa-trash"></i> Delete Selected
+          </button>
+        </div>
+      </div>
+
+      <!-- Selection count bar -->
+      <div class="bulk-count-bar">
+        <i class="fas fa-check-square"></i>
+        <span><strong id="bulkSelectedCount">0</strong> product(s) selected</span>
+        <button onclick="bulkToggleAll(false)"
+          style="margin-left:auto;background:none;border:none;color:inherit;cursor:pointer;font-size:0.8rem;text-decoration:underline;">
+          Clear selection
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div id="bulkTableWrap" style="background:#fff;border:1px solid #eee;border-radius:10px;overflow-x:auto;"></div>
+        <div style="text-align:center;padding:32px;color:#888;">
+          <i class="fas fa-box-open" style="font-size:2rem;opacity:0.4;display:block;margin-bottom:8px;"></i>
+          <p>Loading products…</p>
+        </div>
+      </div>
+
+      <!-- Message -->
+      <div id="bulkMsg"></div>
+
+    </div><!-- /bulkSection -->
+
+  </div><!-- end dashboardWrap -->
+
+  <!-- SCRIPTS -->
+  <script type="module" src="firebase.js?v=2"></script>
+  <script type="module" src="dashboard.js?v=2"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    emailjs.init("qJKglsuqxDYbvs15S");
+  </script>
+
+  <!-- CATEGORY MANAGER SCRIPT -->
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { collection, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const catNameInput = document.getElementById("catName");
+    const addCatBtn    = document.getElementById("addCatBtn");
+    const catList      = document.getElementById("categoryList");
+    const catSelect    = document.getElementById("category");
+
+    onSnapshot(collection(db, "categories"), (snapshot) => {
+      catList.innerHTML = "";
+      const prevValue = catSelect.value;
+      catSelect.innerHTML = `<option value="" disabled selected>Select category</option>`;
+      snapshot.forEach((docSnap) => {
+        const cat = { id: docSnap.id, ...docSnap.data() };
+        const tag = document.createElement("div");
+        tag.style.cssText = "display:inline-flex; align-items:center; gap:6px; padding:4px 12px; background:#e8f0fe; border:1px solid #93c5fd; border-radius:20px; font-size:13px;";
+        tag.innerHTML = `<span>${cat.name}</span><span data-id="${cat.id}" data-name="${cat.name}" style="cursor:pointer; color:#dc2626; font-size:16px; line-height:1;">&times;</span>`;
+        tag.querySelector("span[data-id]").addEventListener("click", async (e) => {
+          if (!confirm(`Delete category "${e.target.dataset.name}"?`)) return;
+          await deleteDoc(doc(db, "categories", e.target.dataset.id));
+        });
+        catList.appendChild(tag);
+        const option = document.createElement("option");
+        option.value = cat.slug; option.textContent = cat.name;
+        catSelect.appendChild(option);
+      });
+      if (prevValue) catSelect.value = prevValue;
+    });
+
+    async function addCategory() {
+      const name = catNameInput?.value?.trim();
+      if (!name) { catNameInput?.focus(); return; }
+      const slug = name.toLowerCase().replace(/\s+/g, "-");
+      try {
+        await setDoc(doc(db, "categories", slug), { name, slug, createdAt: new Date() });
+        catNameInput.value = "";
+      } catch (err) { console.error(err); alert("Failed to add category ❌"); }
+    }
+
+    addCatBtn.addEventListener("click", addCategory);
+    catNameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addCategory(); } });
+  </script>
+
+  <!-- PROMO MANAGER SCRIPT -->
+  <script type="module">
+    import { db } from "./firebase.js";
+    import { collection, onSnapshot, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const promoTable = document.getElementById("promoTable");
+
+    onSnapshot(collection(db, "promotions"), (snapshot) => {
+      promoTable.innerHTML = "";
+      if (snapshot.empty) {
+        promoTable.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:16px; color:#888;">No promotions yet</td></tr>`;
+        return;
+      }
+      snapshot.forEach((docSnap) => {
+        const p      = { id: docSnap.id, ...docSnap.data() };
+        const symbol = p.currency === "USD" ? "$" : p.currency === "EUR" ? "€" : p.currency === "GBP" ? "£" : "₵";
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td style="padding:8px; text-align:center;"><img src="${p.imageURL || p.imageUrl || 'images/no-image.png'}" style="width:60px; height:60px; object-fit:cover; border-radius:6px;"></td>
+          <td style="padding:8px;">${p.name || "—"}</td>
+          <td style="padding:8px;">${symbol}${p.price || 0}</td>
+          <td style="padding:8px; color:#dc2626; font-weight:bold;">${p.discount ? p.discount + "% OFF" : "—"}</td>
+          <td style="padding:8px;">${p.stock ?? "—"}</td>
+          <td style="padding:8px; text-align:center;"><input type="checkbox" ${p.active ? "checked" : ""} onchange="togglePromoActive('${p.id}', this.checked)"></td>
+          <td style="padding:8px; white-space:nowrap;">
+            <button onclick="editPromo('${p.id}')" style="margin-right:6px; padding:5px 10px; background:#2563eb; color:#fff; border:none; border-radius:5px; cursor:pointer;">✏️ Edit</button>
+            <button onclick="deletePromo('${p.id}', '${(p.name || '').replace(/'/g, "\\'")}')" style="padding:5px 10px; background:#dc2626; color:#fff; border:none; border-radius:5px; cursor:pointer;">🗑 Delete</button>
+          </td>`;
+        promoTable.appendChild(row);
+      });
+    });
+
+    window.togglePromoActive = async (id, active) => {
+      try { await updateDoc(doc(db, "promotions", id), { active }); }
+      catch (err) { console.error(err); alert("Failed to update status ❌"); }
+    };
+
+    window.editPromo = async (id) => {
+      try {
+        const snap = await getDoc(doc(db, "promotions", id));
+        if (!snap.exists()) return alert("Promo not found ❌");
+        const p = snap.data();
+        const newName     = prompt("Name:", p.name || ""); if (!newName) return;
+        const newPrice    = prompt("Price:", p.price || 0);
+        const newDiscount = prompt("Discount % (0 for none):", p.discount || 0);
+        const newStock    = prompt("Stock:", p.stock || 0);
+        const newCartLink = prompt("Cart link:", p.cartLink || "shop.html");
+        await updateDoc(doc(db, "promotions", id), { name: newName.trim(), price: Number(newPrice) || 0, discount: Number(newDiscount) || 0, stock: Number(newStock) || 0, cartLink: newCartLink?.trim() || "shop.html" });
+        alert("Promo updated ✅");
+      } catch (err) { console.error(err); alert("Failed to update ❌"); }
+    };
+
+    window.deletePromo = async (id, name) => {
+      if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
+      try { await deleteDoc(doc(db, "promotions", id)); alert("Deleted 🗑️"); }
+      catch (err) { console.error(err); alert("Failed to delete ❌"); }
+    };
+  </script>
+
+  <!-- REVENUE + PERFORMANCE + BULK — loaded once, together -->
+  <script type="module">
+    import { initRevenue }       from "./revenue.js";
+    import { initPerformance }   from "./performance.js";
+    import { initBulkProducts }  from "./bulk.js";
+    import {
+      getAllSellerBalances,
+      getAllPayoutHistory,
+      triggerPayout
+    } from "./payouts.js";
+
+    initRevenue({ role: "admin", sellerUid: null });
+    initPerformance({ role: "admin", sellerUid: null });
+    initBulkProducts({ role: "admin", sellerUid: null });
+
+    function showPayoutMsg(text, ok) {
+      const el = document.getElementById("payoutMsg");
+      if (!el) return;
+      el.textContent  = text;
+      el.style.display = "block";
+      el.style.background = ok ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)";
+      el.style.color       = ok ? "#16a34a" : "#dc2626";
+    }
+
+    async function renderPayoutBalances() {
+      const tbody = document.getElementById("payoutBalancesBody");
+      if (!tbody) return;
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">Loading balances…</td></tr>`;
+
+      try {
+        const balances = await getAllSellerBalances();
+
+        if (balances.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">No outstanding balances 🎉</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = balances.map(b => `
+          <tr>
+            <td style="padding:8px;">${b.sellerName}</td>
+            <td style="padding:8px;text-align:center;">${b.orderCount}</td>
+            <td style="padding:8px;text-align:right;font-weight:600;">GHS ${b.owedAmount.toFixed(2)}</td>
+            <td style="padding:8px;text-align:center;">
+              <button onclick="window.handlePayout('${b.sellerUid}', this)"
+                style="padding:6px 14px;background:#2e7d32;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.8rem;">
+                <i class="fas fa-paper-plane"></i> Pay Out
+              </button>
+            </td>
+          </tr>`).join("");
+      } catch (err) {
+        console.error("Failed to load balances:", err);
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:#dc2626;">Failed to load balances ❌</td></tr>`;
+      }
+    }
+
+    async function renderPayoutHistory() {
+      const tbody = document.getElementById("payoutHistoryBody");
+      if (!tbody) return;
+
+      try {
+        const history = await getAllPayoutHistory();
+
+        if (history.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:#888;">No payouts yet</td></tr>`;
+          return;
+        }
+
+        const statusColor = { completed: "#16a34a", pending: "#f59e0b", failed: "#dc2626" };
+
+        tbody.innerHTML = history.map(p => {
+          const date = p.createdAt?.toDate?.()?.toLocaleString("en-GH") || "—";
+          const color = statusColor[p.status] || "#6b7280";
+          return `
+            <tr>
+              <td style="padding:8px;">${p.sellerName || "—"}</td>
+              <td style="padding:8px;text-align:right;">GHS ${Number(p.amount || 0).toFixed(2)}</td>
+              <td style="padding:8px;text-align:center;color:${color};font-weight:600;text-transform:capitalize;">${p.status}</td>
+              <td style="padding:8px;">${date}</td>
+            </tr>`;
+        }).join("");
+      } catch (err) {
+        console.error("Failed to load payout history:", err);
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;padding:20px;color:#dc2626;">Failed to load history ❌</td></tr>`;
+      }
+    }
+
+    window.handlePayout = async function (sellerUid, btn) {
+      if (!confirm("Send payout to this seller now? This will trigger a real transfer.")) return;
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sending…`;
+
+      try {
+        const result = await triggerPayout(sellerUid);
+        showPayoutMsg(`Payout sent ✅ GHS ${result.amount.toFixed(2)} for ${result.orderCount} order(s).`, true);
+        await renderPayoutBalances();
+        await renderPayoutHistory();
+      } catch (err) {
+        console.error("Payout failed:", err);
+        showPayoutMsg(`Payout failed ❌ ${err.message}`, false);
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-paper-plane"></i> Pay Out`;
+      }
+    };
+
+    window.refreshPayoutBalances = function () {
+      renderPayoutBalances();
+      renderPayoutHistory();
+    };
+
+    renderPayoutBalances();
+    renderPayoutHistory();
+  </script>
+
+  <!-- TOGGLE + MENU SCRIPT -->
+  <script>
+    document.querySelectorAll(".section-toggle").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = document.getElementById(btn.dataset.target);
+        const isOpen = target.classList.toggle("open");
+        btn.classList.toggle("open", isOpen);
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggle   = document.getElementById("menu-toggle");
+      const navLinks = document.getElementById("nav-links");
+      if (!toggle || !navLinks) return;
+      toggle.addEventListener("click", () => navLinks.classList.toggle("active"));
+    });
+  </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
+<script src="/pwa.js"></script>
+</body>
+</html>

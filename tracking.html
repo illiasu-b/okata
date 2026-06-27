@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Order</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#00BFFF">
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <header class="top-navbar">
+    <div class="top-logo">
+      <img src="rahmangrow_logo.svg" alt="RahmanGrow Logo">
+    </div>
+  </header>
+
+  <!-- MAIN NAV -->
+  <header>
+    <nav class="navbar">
+      <div class="logo"><a href="index.html"></a></div>
+      <ul class="nav-links">
+        <li><a href="index.html"><i class="fas fa-house"></i><span>Home</span></a></li>
+        <li><a href="shop.html"><i class="fas fa-store"></i><span>Shop</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div style="max-width:500px; margin:2rem auto; padding:0 1rem;">
+    <h2 style="text-align:center; margin-bottom:0.5rem;">
+      <i class="fas fa-search"></i> Track Your Order
+    </h2>
+    <p style="text-align:center; color:#888; margin-bottom:2rem;">
+      Enter your email or order ID to check your order status.
+    </p>
+
+    <!-- SEARCH FORM -->
+    <div style="background:#fff; border-radius:12px; padding:1.5rem;
+                box-shadow:0 4px 20px rgba(0,0,0,0.08); margin-bottom:1.5rem;">
+
+      <div style="margin-bottom:1rem;">
+        <label style="display:block; font-size:0.8rem; font-weight:600;
+                      color:#888; text-transform:uppercase; margin-bottom:0.4rem;">
+          Email address
+        </label>
+        <input type="email" id="trackEmail" placeholder="you@example.com"
+          style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0;
+                 border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
+      </div>
+
+      <div style="text-align:center; color:#aaa; margin-bottom:1rem; font-size:0.85rem;">
+        — or —
+      </div>
+
+      <div style="margin-bottom:1.2rem;">
+        <label style="display:block; font-size:0.8rem; font-weight:600;
+                      color:#888; text-transform:uppercase; margin-bottom:0.4rem;">
+          Order ID
+        </label>
+        <input type="text" id="trackOrderId" placeholder="e.g. abc123xyz"
+          style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0;
+                 border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
+      </div>
+
+      <button id="trackBtn" onclick="trackOrder()"
+        style="width:100%; padding:0.85rem; background:#2e7d32; color:#fff;
+               border:none; border-radius:8px; font-size:1rem; font-weight:600;
+               cursor:pointer;">
+        <i class="fas fa-search"></i> Track Order
+      </button>
+
+      <div id="trackMsg" style="display:none; margin-top:1rem;"></div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="trackResults"></div>
+  </div>
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="track.js"></script>
+
+<script src="/pwa.js"></script>
+</body>
+</html>

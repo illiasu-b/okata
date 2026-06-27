@@ -1,0 +1,97 @@
+/* Page container */
+#orderTracking {
+  max-width: 450px;
+  margin: 60px auto;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* Title */
+#orderTracking h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Email input */
+#orderEmail {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.2s;
+  margin-bottom: 15px;
+}
+
+#orderEmail:focus {
+  border-color: #0078ff;
+  box-shadow: 0 0 5px rgba(0,120,255,0.3);
+}
+
+/* Track button */
+#trackBtn {
+  width: 100%;
+  padding: 12px;
+  background: #0078ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#trackBtn:hover {
+  background: #005fcc;
+}
+
+/* Orders list */
+#ordersList {
+  margin-top: 25px;
+  text-align: left;
+}
+
+/* Each order card */
+#ordersList ul {
+  list-style: none;
+  padding: 0;
+}
+
+#ordersList li {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  border-left: 4px solid #0078ff;
+}
+
+#ordersList li strong {
+  color: #333;
+}
+
+#ordersList small {
+  display: block;
+  margin-top: 8px;
+  color: #666;
+  font-size: 13px;
+}
+
+/* Items inside each order */
+#ordersList li ul {
+  margin-top: 8px;
+  padding-left: 20px;
+}
+
+#ordersList li ul li {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 3px 0;
+}

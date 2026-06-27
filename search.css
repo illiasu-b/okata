@@ -1,0 +1,47 @@
+/* ================= FIXED ICON SEARCH ================= */
+.search-bar {
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  z-index: 800;
+}
+
+/* Hide input by default */
+#searchInput {
+  width: 0;
+  opacity: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.4s ease;
+}
+
+/* Style icon button */
+#searchButton {
+  width: 40px;
+  height: 40px;
+  background-color: #0078d7;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+/* Expand input when hovering search area */
+.search-bar:hover #searchInput {
+  width: 150px;
+  opacity: 1;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  margin-right: 8px;
+}
+
+/* ================= SEARCH RESULTS ================= */
+/* ✅ FIX: removed #productResults grid override — shop.css handles it */
+/* ✅ FIX: removed .product-card override — shop.css handles it */

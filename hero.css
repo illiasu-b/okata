@@ -1,0 +1,118 @@
+/* ── Base (mobile-first: 360px+, 2 columns) ── */
+.hero-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.625rem;
+  padding: 0.75rem;
+  margin: 0 auto;
+  max-width: 1200px;
+  box-sizing: border-box;
+}
+
+.hero-product {
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-product img {
+  width: 100%;
+  aspect-ratio: 4 / 3;        /* scales with card width — no fixed height needed */
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  flex-shrink: 0;
+}
+
+.hero-product h4 {
+  font-size: 0.75rem;
+  margin: 0.3rem 0 0.15rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-text-size-adjust: 100%;
+}
+
+.hero-product p {
+  font-size: 0.7rem;
+  color: #666;
+  margin: 0 0 0.15rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Tiny phones (under 360px) — single column ── */
+@media (max-width: 359px) {
+  .hero-container {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-product img {
+    aspect-ratio: 16 / 9;     /* wider ratio looks better at full width */
+  }
+}
+
+/* ── Tablets (600px+) — 3 columns ── */
+@media (min-width: 600px) {
+  .hero-container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.875rem;
+    padding: 1rem;
+  }
+
+  .hero-product {
+    padding: 0.625rem;
+    border-radius: 14px;
+  }
+
+  .hero-product img {
+    border-radius: 10px;
+  }
+
+  .hero-product h4 {
+    font-size: 0.875rem;
+    margin: 0.5rem 0 0.25rem;
+  }
+
+  .hero-product p {
+    font-size: 0.8rem;
+  }
+}
+
+/* ── Desktop (900px+) — 4 columns ── */
+@media (min-width: 900px) {
+  .hero-container {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+
+  .hero-product:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ── Touch devices ── */
+@media (hover: none) {
+  .hero-product:hover {
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .hero-product:active {
+    transform: scale(0.97);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+}

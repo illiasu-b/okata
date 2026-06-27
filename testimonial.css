@@ -1,0 +1,100 @@
+/* ================= TESTIMONIALS ================= */
+
+.testimonials-section {
+  padding: 70px 20px;
+  text-align: center;
+  background:
+    linear-gradient(135deg, rgba(46, 125, 50, 0.75), rgba(200, 230, 201, 0.5)),
+    
+  min-height: 400px;
+}
+
+.testimonials-section h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+/* Rating Form */
+#testimonial-form {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  margin-bottom: 50px;
+}
+
+#testimonial-form input,
+#testimonial-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+#testimonial-form textarea {
+  height: 100px;
+  resize: none;
+}
+
+#testimonial-form button {
+  padding: 12px 25px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+#testimonial-form button:hover {
+  background: #256c2a;
+}
+
+/* Star Rating */
+.star-rating {
+  margin-bottom: 15px;
+}
+
+.star-rating span {
+  font-size: 30px;
+  cursor: pointer;
+  color: #ccc;
+  transition: 0.2s;
+}
+
+.star-rating span.active {
+  color: #f4b400;
+}
+
+/* Testimonials Cards */
+.testimonials-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.testimonial-card {
+  background: white;
+  padding: 20px;
+  max-width: 280px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  text-align: left;
+}
+
+.testimonial-card .stars {
+  color: #f4b400;
+  margin-bottom: 10px;
+}
+
+.testimonial-card h4 {
+  margin-bottom: 5px;
+  color: #2e7d32;
+}

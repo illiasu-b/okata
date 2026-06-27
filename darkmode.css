@@ -1,0 +1,52 @@
+/* darkmode.css */
+
+html.dark body {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+html.dark header,
+html.dark .top-navbar,
+html.dark .navbar {
+  background-color: #1e1e1e;
+}
+
+html.dark .product-card,
+html.dark #profileModalOverlay > div,
+html.dark #cartDetails {
+  background-color: #1e1e1e;
+  border-color: #333;
+  color: #e0e0e0;
+}
+
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+html.dark a {
+  color: #81c784;
+}
+
+html.dark button {
+  color: inherit;
+}
+
+html.dark .search-bar input {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+html.dark #promo-banner-container h2,
+html.dark #promo-banner-container p {
+  color: #e0e0e0;
+}
+
+html.dark #scrollPromoPopup {
+  background: #1e1e1e;
+  color: #e0e0e0;
+}

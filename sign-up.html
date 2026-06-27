@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Sign-Up</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#00BFFF">
+</head>
+<body>
+
+<h2>Admin Sign-Up</h2>
+<form id="adminSignupForm">
+  <input type="email" id="signupEmail" placeholder="Email" required><br>
+  <input type="password" id="signupPassword" placeholder="Password" required><br>
+  <button type="submit">Create Account</button>
+</form>
+
+<p>Already have an account? <a href="admin.html">Login here</a></p>
+
+<script type="module">
+import { auth } from "./firebase.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const signupForm = document.getElementById("adminSignupForm");
+
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value.trim();
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    alert("Admin account created ✅");
+    window.location.href = "admin.html";
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+});
+</script>
+
+<script src="/pwa.js"></script>
+</body>
+</html>

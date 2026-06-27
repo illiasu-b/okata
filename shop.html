@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Shop</title>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00BFFF">
+  <link rel="stylesheet" href="shop.css" />
+  <link rel="stylesheet" href="search.css?v=2" />
+  <link rel="stylesheet" href="darkmode.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ── WHATSAPP BUTTON ── */
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 16px;
+      background: #25d366;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      width: 100%;
+      margin-top: 8px;
+      box-sizing: border-box;
+    }
+    .wa-btn:hover { background: #1ebe5d; transform: translateY(-1px); }
+    .wa-btn i { font-size: 1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- ================= TOP LOGO NAVBAR ================= -->
+  <header class="top-navbar">
+    <div class="top-logo">
+      <img src="logo.png?v=2" alt="Okata Logo">
+    </div>
+
+    <div style="display:flex; align-items:center; gap:16px; margin-left:auto; padding-right:1rem;">
+
+      <!-- Seller Dashboard Icon -->
+      <a id="sellerNavItem" href="seller-dashboard.html"
+        style="display:none; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
+        <i class="fas fa-store-alt"></i>
+        <span style="font-size:0.65rem;">Store</span>
+      </a>
+
+      <!-- Track Order Icon -->
+      <a href="track.html"
+        style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
+        <i class="fas fa-search"></i>
+        <span style="font-size:0.65rem;">Track</span>
+      </a>
+
+      <!-- Profile Icon -->
+      <a href="#" id="profileNavBtn" onclick="openProfileModal(); return false;"
+        style="display:flex; flex-direction:column; align-items:center; gap:3px; text-decoration:none; color:white; font-size:0.9rem;">
+        <i class="fas fa-user-circle"></i>
+        <span style="font-size:0.65rem;" id="profileNavLabel">Profile</span>
+      </a>
+
+    </div>
+  </header>
+
+  <!-- ================= BOTTOM NAVBAR ================= -->
+  <header>
+    <nav class="navbar">
+      <div class="logo">
+        <a href="index.html"></a>
+      </div>
+
+      <ul class="nav-links" id="nav-links">
+        <li>
+          <a href="index.html">
+            <i class="fas fa-house"></i>
+            <span>Home</span>
+          </a>
+        </li>
+
+        <!-- Wishlist -->
+        <li>
+          <a href="#" onclick="showWishlist(); return false;">
+            <i class="fas fa-heart"></i>
+            <span>Wishlist</span>
+          </a>
+        </li>
+
+        <!-- Cart Icon -->
+        <li class="cart-item">
+          <a href="order.html" class="cart-link">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartBadge">0</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ================= SHOP PAGE ================= -->
+  <section class="shop-page">
+    <h1>Shop Anytime, Anywhere, Effortlessly</h1>
+    <div id="products-container"></div>
+    <div id="cartContainer"></div>
+  </section>
+
+  <!-- ================= CART DETAILS ================= -->
+  <div id="cartDetails" style="display:none;">
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Qty</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="cartTable"></tbody>
+    </table>
+    <p>Total: ₵<span id="cartTotal">0</span></p>
+  </div>
+
+  <!-- ================= SEARCH SECTION ================= -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search products..." />
+    <button id="searchButton">
+      <i class="fas fa-search"></i>
+    </button>
+  </div>
+
+  <div id="productResults"></div>
+
+  <!-- ================= PROFILE MODAL ================= -->
+  <div id="profileModalOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9999; overflow-y:auto; padding:2rem 1rem;">
+    <div style="background:#fff; border-radius:14px; max-width:420px; margin:2rem auto; padding:2rem; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+
+      <button onclick="closeProfileModal()" style="position:absolute; top:1rem; right:1rem; background:none; border:none; font-size:1.4rem; cursor:pointer; color:#888; line-height:1;">✕</button>
+
+      <!-- TAB BUTTONS -->
+      <div id="authTabs" style="display:flex; gap:4px; background:#f1f1f1; border-radius:8px; padding:4px; margin-bottom:1.5rem;">
+        <button onclick="switchProfileTab('login')" id="tabLogin" style="flex:1; padding:0.5rem; border:none; border-radius:6px; background:#fff; font-weight:600; cursor:pointer; font-size:0.9rem; color:#000;">Sign in</button>
+        <button onclick="switchProfileTab('register')" id="tabRegister" style="flex:1; padding:0.5rem; border:none; border-radius:6px; background:transparent; font-weight:500; cursor:pointer; font-size:0.9rem; color:#888;">Register</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="profileLoginForm">
+        <h3 style="font-size:1.4rem; margin-bottom:1.2rem;">Welcome back 👋</h3>
+        <div style="margin-bottom:1rem;">
+          <label style="display:block; font-size:0.8rem; font-weight:600; color:#888; text-transform:uppercase; margin-bottom:0.4rem;">Email</label>
+          <input type="email" id="pLoginEmail" placeholder="you@example.com" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
+        </div>
+        <div style="margin-bottom:1rem;">
+          <label style="display:block; font-size:0.8rem; font-weight:600; color:#888; text-transform:uppercase; margin-bottom:0.4rem;">Password</label>
+          <input type="password" id="pLoginPassword" placeholder="••••••••" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
+        </div>
+        <button id="pLoginBtn" onclick="handleProfileLogin()" data-label="Sign In" style="width:100%; padding:0.85rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer; margin-top:0.5rem;">Sign In</button>
+        <p style="text-align:center; margin-top:10px; font-size:0.85rem;">
+          <a href="#" onclick="handleForgotPassword(); return false;" style="color:#2e7d32; text-decoration:none;">Forgot password?</a>
+        </p>
+        <div id="pLoginMsg" style="display:none;"></div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="profileRegisterForm" style="display:none;">
+        <h3 style="font-size:1.4rem; margin-bottom:1.2rem;">Create account 🌱</h3>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1rem;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:600; color:#888; text-transform:uppercase; margin-bottom:0.4rem;">First name</label>
+            <input type="text" id="pRegFirst" placeholder="Ada" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:600; color:#888; text-transform:uppercase; margin-bottom:0.4rem;">Last name</label>
+            <input type="text" id="pRegLast" placeholder="Lovelace" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
+          </div>
+        </div>
+        <div style="margin-bottom:1rem;">
+          <label style="display:block; font-size:0.8rem; font-weight:600; color:#888; text-transform:uppercase; margin-bottom:0.4rem;">Email</label>
+          <input type="email" id="pRegEmail" placeholder="you@example.com" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1.2rem;">
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:600; color:#888; text-transform:uppercase; margin-bottom:0.4rem;">Password</label>
+            <input type="password" id="pRegPassword" placeholder="••••••••" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; font-size:0.8rem; font-weight:600; color:#888; text-transform:uppercase; margin-bottom:0.4rem;">Confirm</label>
+            <input type="password" id="pRegConfirm" placeholder="••••••••" style="width:100%; padding:0.7rem 0.9rem; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; outline:none; box-sizing:border-box;">
+          </div>
+        </div>
+        <button id="pRegBtn" onclick="handleProfileRegister()" data-label="Create Account" style="width:100%; padding:0.85rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:600; cursor:pointer;">Create Account</button>
+        <div id="pRegMsg" style="display:none;"></div>
+        <p style="text-align:center; margin-top:12px; font-size:0.82rem; color:#888;">
+          Want to sell on our platform?
+          <button id="sellerRegBtn" style="background:none; border:none; color:#2e7d32; cursor:pointer; font-size:0.82rem; font-weight:600; padding:0; text-decoration:underline;">
+            Register as Seller
+          </button>
+        </p>
+      </div>
+
+      <!-- LOGGED IN VIEW -->
+      <div id="profileLoggedIn" style="display:none; text-align:center;">
+        <div id="pAvatar" onclick="document.getElementById('avatarFileInput').click()"
+          style="width:72px; height:72px; border-radius:50%; background:#e8f5e9; display:flex; align-items:center; justify-content:center; font-size:1.8rem; font-weight:700; color:#2e7d32; margin:0 auto 0.8rem; border:2px solid #a5d6a7; cursor:pointer; overflow:hidden; position:relative;">
+        </div>
+        <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" />
+        <p style="font-size:11px; color:#aaa; margin-top:-6px; margin-bottom:10px;">Tap photo to change</p>
+        <h3 id="pFullName" style="font-size:1.2rem; margin-bottom:0.2rem;"></h3>
+        <p id="pEmail" style="font-size:0.85rem; color:#888; margin-bottom:1.2rem;"></p>
+        <div style="background:#f9f9f9; border-radius:10px; padding:1rem; text-align:left; margin-bottom:1.2rem;">
+          <div style="display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px solid #eee; font-size:0.9rem;">
+            <span style="color:#888;">Email</span>
+            <span id="pInfoEmail" style="font-weight:500;"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:0.4rem 0; font-size:0.9rem;">
+            <span style="color:#888;">Member since</span>
+            <span id="pInfoJoined" style="font-weight:500;"></span>
+          </div>
+        </div>
+
+        <!-- My Orders Button -->
+        <button onclick="showOrderHistory()"
+          style="width:100%; padding:0.75rem; background:#2e7d32; color:#fff; border:none; border-radius:8px; font-size:0.95rem; font-weight:600; cursor:pointer; margin-bottom:0.6rem;">
+          <i class="fas fa-history"></i> My Orders
+        </button>
+
+        <!-- Order History Section -->
+        <div id="orderHistorySection" style="display:none; text-align:left; margin-top:1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <h4 style="margin:0; font-size:1rem;">Order History</h4>
+            <a href="#" onclick="hideOrderHistory(); return false;" style="color:#888; font-size:0.85rem; text-decoration:none;">← Back</a>
+          </div>
+          <div id="orderHistoryList"></div>
+        </div>
+
+        <button onclick="handleProfileLogout()" style="width:100%; padding:0.75rem; background:transparent; color:#c0392b; border:1.5px solid #e0e0e0; border-radius:8px; font-size:0.95rem; font-weight:600; cursor:pointer;">Sign Out</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= SCROLL PROMO POPUP ================= -->
+<div id="scrollPromoPopup" style="
+  display:none;
+  position:fixed;
+  bottom:90px;
+  right:16px;
+  z-index:9998;
+  background:#fff;
+  border-radius:16px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.18);
+  max-width:300px;
+  width:90%;
+  overflow:hidden;
+  animation: slideUpPromo 0.4s ease;
+">
+  <!-- Close Button -->
+  <button onclick="dismissScrollPromo()" style="
+    position:absolute; top:8px; right:10px;
+    background:none; border:none; font-size:1.2rem;
+    cursor:pointer; color:#fff; z-index:1;
+  ">✕</button>
+
+  <!-- Banner -->
+  <div style="background:linear-gradient(135deg,#2e7d32,#66bb6a); padding:18px 20px 12px;">
+    <p style="margin:0; color:#fff; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Limited Offer 🔥</p>
+    <h3 style="margin:4px 0 0; color:#fff; font-size:1.4rem; font-weight:800;">10% OFF</h3>
+    <p style="margin:2px 0 0; color:#c8e6c9; font-size:0.85rem;">on your first order today!</p>
+  </div>
+
+  <!-- Body -->
+  <div style="padding:14px 20px 18px;">
+    <p style="margin:0 0 12px; font-size:0.88rem; color:#555;">Use code at checkout:</p>
+    <div style="
+      background:#f1f8f1; border:1.5px dashed #2e7d32;
+      border-radius:8px; padding:8px 14px;
+      display:flex; justify-content:space-between; align-items:center;
+    ">
+      <span style="font-weight:800; font-size:1.1rem; color:#2e7d32; letter-spacing:2px;">Okata1</span>
+      <button onclick="copyPromoCode()" id="copyPromoBtn" style="
+        background:#2e7d32; color:#fff; border:none;
+        border-radius:6px; padding:4px 10px;
+        font-size:0.75rem; cursor:pointer; font-weight:600;
+      ">Copy</button>
+    </div>
+    <a href="shop.html" style="
+      display:block; margin-top:12px; text-align:center;
+      background:#2e7d32; color:#fff; border-radius:8px;
+      padding:10px; font-weight:700; text-decoration:none; font-size:0.9rem;
+    ">Shop Now →</a>
+  </div>
+</div>
+
+<style>
+  @keyframes slideUpPromo {
+    from { opacity:0; transform:translateY(30px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+</style>
+
+<script>
+  let promoCount = 0;
+
+  function showScrollPromo() {
+    document.getElementById('scrollPromoPopup').style.display = 'block';
+
+    // Auto-dismiss after 12 seconds
+    setTimeout(() => {
+      document.getElementById('scrollPromoPopup').style.display = 'none';
+    }, 12000);
+  }
+
+  // Show every 10s, max 3 times per session
+  const promoInterval = setInterval(() => {
+    if (promoCount >= 3) {
+      clearInterval(promoInterval);
+      return;
+    }
+    showScrollPromo();
+    promoCount++;
+  }, 10000);
+
+  function dismissScrollPromo() {
+    document.getElementById('scrollPromoPopup').style.display = 'none';
+  }
+
+  function copyPromoCode() {
+    navigator.clipboard.writeText('RAHMA10').then(() => {
+      const btn = document.getElementById('copyPromoBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+</script>
+  <!-- ================= SCRIPTS ================= -->
+  <script type="module" src="firebase.js?v=2"></script>
+  <script type="module" src="shop.js"></script>
+  <script type="module" src="order.js?v=2"></script>
+  <script type="module" src="search.js"></script>
+  <script type="module" src="profile.js?v=2"></script>
+  <script type="module" src="reviews.js"></script>
+  <script type="module" src="wishlist.js"></script>
+  <script type="module" src="darkmode.js"></script>
+
+  <!-- ================= WHATSAPP HELPER ================= -->
+  <script>
+    const STORE_WHATSAPP = "233240391997";
+
+    // Called from product cards in shop.js
+    window.buyViaWhatsApp = function(name, price, currency, sellerWhatsapp) {
+      const number  = sellerWhatsapp || STORE_WHATSAPP;
+      const message = encodeURIComponent(
+        `Hello RahmanGrow! 👋\n\nI'd like to order:\n• ${name} — ${currency} ${Number(price).toFixed(2)}\n\nPlease confirm my order. Thank you!`
+      );
+      window.open(`https://wa.me/${number}?text=${message}`, "_blank");
+    };
+  </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
+<script src="/pwa.js"></script>
+</body>
+</html>

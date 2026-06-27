@@ -1,0 +1,70 @@
+#promo-banner-container {
+  position: relative;
+  min-height: 180px; /* enough space for image */
+  margin: 20px 0;
+  overflow: hidden;
+}
+
+/* Base banner */
+#promo-banner-container .promo-banner {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  width: 100%;
+}
+
+/* Visible banner */
+#promo-banner-container .promo-banner.promo-show {
+  display: flex;
+}
+#promo-banner-container .promo-show {
+  opacity: 1;
+  z-index: 10;
+}
+
+#promo-banner-container .promo-hidden {
+  opacity: 0;
+  z-index: 0;
+}
+
+/* Image */
+#promo-banner-container img {
+  border-radius: 8px;
+  max-width: 300px;
+  display: block;
+  margin: 0;
+}
+
+/* Title */
+#promo-banner-container h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+/* Message */
+#promo-banner-container p {
+  margin: 0;
+  font-size: 16px;
+  color: #555;
+  max-width: 320px;
+  text-align: center;
+}
+
+/* Button */
+#promo-banner-container a {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-top: 2px; /* button closer to message */
+  background: #2e7d32;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+#promo-banner-container a:hover {
+  background: #1b5e20;
+}

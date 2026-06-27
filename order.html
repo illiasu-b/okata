@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order</title>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00BFFF">
+  <link rel="stylesheet" href="style.css?v=2" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    .section-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 35%;
+      padding: 14px 2px;
+      margin: 10px 0 0;
+      background: linear-gradient(135deg, #2e7d32, #4caf50);
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      text-align: left;
+    }
+
+    .section-toggle.blue {
+      background: linear-gradient(135deg, #1565c0, #42a5f5);
+    }
+
+    .section-toggle:hover { transform: translateY(-1px); }
+
+    .section-toggle .arrow {
+      transition: transform 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .section-toggle.open .arrow { transform: rotate(180deg); }
+
+    .collapsible-section {
+      display: none;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      padding: 20px;
+      background: #fff;
+      margin-bottom: 10px;
+    }
+
+    .collapsible-section.open { display: block; }
+
+    /* ── WHATSAPP BUTTON ── */
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 20px;
+      background: #25d366;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      width: 100%;
+      margin-top: 14px;
+      box-sizing: border-box;
+      letter-spacing: 0.2px;
+    }
+
+    .wa-btn:hover { background: #1ebe5d; transform: translateY(-1px); }
+    .wa-btn i { font-size: 1.2rem; }
+
+    .wa-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 14px 0 0;
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+
+    .wa-divider::before,
+    .wa-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e5e5e5;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- TOP NAV -->
+<header class="top-navbar">
+  <div class="top-logo">
+    <img src="logo.png?v=2" alt="Okata Logo">
+  </div>
+</header>
+
+<!-- MAIN NAV -->
+<header>
+  <nav class="navbar">
+    <div class="logo">
+      <a href="index.html"></a>
+    </div>
+    <ul class="nav-links" id="nav-links">
+      <li>
+        <a href="index.html">
+          <i class="fas fa-house"></i>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="shop.html">
+          <i class="fas fa-store"></i>
+          <span>Shop</span>
+        </a>
+      </li>
+      <li class="cart-item">
+        <a href="order.html" class="cart-link">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cartBadge">0</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<!-- CUSTOMER INFO -->
+<button class="section-toggle" id="customerToggle">
+  <span><i class="fas fa-credit-card"></i> Pay Now</span>
+  <span class="arrow">▼</span>
+</button>
+
+<div class="collapsible-section" id="customerSection">
+  <form id="orderForm">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="text" id="phone" placeholder="Phone" required>
+    <input type="email" id="email" placeholder="Enter your email" required>
+    <input type="text" id="address" placeholder="Address" required>
+
+    <button type="button" id="payNowBtn">
+      <i class="fas fa-credit-card"></i> Pay Now
+    </button>
+
+    <button type="submit">
+      <i class="fas fa-receipt"></i> Place Order
+    </button>
+  </form>
+</div>
+
+<!-- ORDER DETAILS -->
+<button class="section-toggle blue" id="orderToggle">
+  <span><i class="fas fa-shopping-cart"></i> View Your Order</span>
+  <span class="arrow">▼</span>
+</button>
+
+<div class="collapsible-section" id="orderSection">
+  <h3>Your Order</h3>
+  <div id="cartTable" class="cart-container"></div>
+  <h3>Total: ₵<span id="cartTotal">0</span></h3>
+
+  <!-- ── WHATSAPP ORDER BUTTON ── -->
+  <div class="wa-divider">or</div>
+  <a id="waCartBtn" class="wa-btn" href="#"
+    onclick="sendCartToWhatsApp(); return false;">
+    <i class="fab fa-whatsapp"></i> Send Order via WhatsApp
+  </a>
+  <p style="text-align:center; font-size:0.75rem; color:#aaa; margin-top:6px;">
+    Opens WhatsApp with your full order details ready to send
+  </p>
+</div>
+
+<!-- PAYSTACK -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+<!-- EMAILJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("qJKglsuqxDYbvs15S");
+</script>
+
+<!-- YOUR SCRIPTS -->
+<script type="module" src="firebase.js?v=2"></script>
+<script type="module" src="profile.js?v=2"></script>
+<script type="module" src="order.js?v=2"></script>
+
+<!-- TOGGLE SCRIPT -->
+<script>
+  function setupToggle(buttonId, sectionId) {
+    const btn     = document.getElementById(buttonId);
+    const section = document.getElementById(sectionId);
+    btn.addEventListener("click", () => {
+      section.classList.toggle("open");
+      btn.classList.toggle("open");
+    });
+  }
+
+  setupToggle("customerToggle", "customerSection");
+  setupToggle("orderToggle",    "orderSection");
+</script>
+
+<!-- ================= WHATSAPP CART FUNCTION ================= -->
+<script>
+  const STORE_WHATSAPP = "233240391997";
+
+  function sendCartToWhatsApp() {
+    // Read cart from localStorage — adjust the key name if yours is different
+    const raw  = localStorage.getItem("cart") || localStorage.getItem("rahmangrow_cart") || "[]";
+    const cart = JSON.parse(raw);
+
+    if (!cart.length) {
+      alert("Your cart is empty! Add some products first.");
+      return;
+    }
+
+    // Build items list
+    const lines = cart.map(item => {
+      const qty      = item.qty || item.quantity || 1;
+      const subtotal = (Number(item.price) * qty).toFixed(2);
+      const currency = item.currency || "GHS";
+      return `• ${item.name} x${qty} — ${currency} ${subtotal}`;
+    }).join("\n");
+
+    // Calculate grand total
+    const total    = cart.reduce((sum, item) => {
+      return sum + (Number(item.price) * (item.qty || item.quantity || 1));
+    }, 0).toFixed(2);
+
+    const currency = cart[0]?.currency || "GHS";
+
+    const message = encodeURIComponent(
+      `Hello RahmanGrow! 👋\n\nI'd like to place an order:\n\n${lines}\n\n` +
+      `*Total: ${currency} ${total}*\n\nPlease confirm my order. Thank you!`
+    );
+
+    window.open(`https://wa.me/${STORE_WHATSAPP}?text=${message}`, "_blank");
+  }
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+
+<script src="/pwa.js"></script>
+</body>
+</html>
